@@ -305,13 +305,13 @@ $$\pi_{i-1}^* = \text{ptr}_i(\pi_i^*)$$
 * $L$: the length of the observation sequence
 * $i$: the position in the sequence
 * $x$: the observation sequence; $x_i$ is the symbol at position $i$
-* $\pi^*$: the most probable path; $\pi_i^*$ is its state at position $i$ (not the same as the initial probabilities $\pi_i$)
+* $\pi_i^\*$: the most probable path; $\pi_i^\*$ is its state at position $i$ (not the same as the initial probabilities $\pi_i$)
 
 ### In our implementation
 
 * Our model has no end state, so termination drops $a_{k0}$:
 
-$$P(x, \pi^*) = \max_k v_k(L), \qquad \pi_L^* = \arg\max_k v_k(L)$$
+$$P(x, \pi^\*) = \max_k v_k(L), \qquad \pi_L^\* = \arg\max_k v_k(L)$$
 
 * We are given initial probabilities directly, so column 1 is $v_k(1) = \pi_k \, e_k(x_1)$ and the recursion starts at $i = 2$.
 * To avoid underflow, we work in log space (max stays max; products become sums):
@@ -340,6 +340,7 @@ $$\log v_\ell(i) = \log e_\ell(x_i) + \max_k \big( \log v_k(i-1) + \log a_{k\ell
 A mixin is a class that adds abilities to another class rather than standing on its own. `ViterbiMixin` cannot run by itself, since it relies on `self.states` and the log tables that `HMMSetup` creates. Python searches the classes in the order they are listed (`HiddenMarkovModel`, then `HMMSetup`, then `ViterbiMixin`), which is called the method resolution order. We picked mixins over making Viterbi a subclass of the HMM because Viterbi is something you do with an HMM, not a kind of HMM, and because it keeps each algorithm in its own notebook cell.
 
 ## Sucesses
+## Successes
 
 ## Struggles
 
@@ -352,6 +353,10 @@ Since this project is the start of many others, we had to make sure that we prep
 
 ### Trivedi: 
 I’d actually worked with HMMs before, in BINF 6400 (Genomics) last semester, where we covered Viterbi, posterior decoding, and CpG island models, and built HMM classifiers for a problem set. So I came in thinking this would mostly be review, but it felt pretty different. There, the focus was on using HMMs and getting the math right for a specific problem. Here, there was no starter code at all, the model could have any number of states or symbols, and the code had to be designed so other algorithms could be added later. That meant I had to understand the algorithm well enough to build it from nothing, not just apply it. So before touching any code I worked through the first two columns of the Viterbi grid by hand with the spec’s example, and that ended up being the most useful thing I did all project. I kept getting stuck on small things, like using only the starting probabilities in column 1, or mixing up the state G with the nucleotide G, or thinking the emission decided the traceback.
+### Other Members: Mara
+I was generally unfamiliar with HMMs going into this project, and did not have any experience with the Viterbi algorithm. Because we were given no background or template code like we usually would, I went ahead and compiled everything from the assignment and primer pages to "recreate" the way we normally do projects, which I think helped a lot. I also did the calculations by hand, although without converting to log, to double check the output. This project built off of the previous projects very nicely, particularly with the recursion and traceback. In my code version, I structured everything around numpy arrays for more efficient indexing, but struggled to do input data conversion, such as the provided examples being dictionaries. The indexing, while not necessarily hard, was difficult to keep track of, causing a lot of debugging towards the end. 
+
+This was also my first time future-proofing. It is much more difficult than I had originally anticipated because, without knowing what will need to be expanded in the next projects, it's hard knowing the best way to structure everything. Because we know the topic of the next projects, we had an idea of what to do, but without having learned it in class or seen the assignment yet, it was a challenge. My group mates and I were able to come up with insights into how to structure our code to accommodate this. 
 
 I also expected log space to change which route wins the max, but comparing the actual numbers showed it doesn’t, which is how we noticed the spec’s line about the max turning into a sum was wrong for Viterbi.
 ### Other Members: 
@@ -380,3 +385,4 @@ Katelyn: I used Claude (Anthropic) throughout this project, mainly to understand
 
 
 Trivedi: I used Claude(Anthropic) to help me understand calculation and assist me undersstanding how the viterbi traceback works. I asked claude how decorators and OOPs concept will help me keep my code more dyanmic and open to future changes. Claude also helped me write tests for the functions to confirm the expected output and calculation. I also revisted notes and materials from BINF6400 on HMM. 
+Mara: I used ChatGPT (OpenAI) to double check my indexing throughout the program and to establish my Class and initialization in such a way that I can add to it in the next projects. Prompt used: "Implementing the viterbi algorithm for HMM and checking me indexing through the numpy arrays. Do not write any code for me"
